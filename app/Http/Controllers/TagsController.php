@@ -7,18 +7,25 @@ use Illuminate\Http\Request;
 
 class TagsController extends Controller
 {
-    public function all(Request $request) {
-        $perPage = $request->input('per_page', 10);
-        $page = $request->input('page', 1);
+    public function all(Request $request)
+    {
+        $perPage = $request->query('per_page', 10);
+        $page = $request->query('page', 0);
 
         $dados = Tag::query()
             ->forPage($page, $perPage)
             ->get();
 
-        return response()->json($dados);
+        return response()->json([
+            'rows' => $dados,
+            'page' => $page,
+            'per_page' => $perPage,
+            'total' => Tag::count(),
+        ]);
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $dados = $request->validate([
             'name' => 'required',
@@ -29,7 +36,8 @@ class TagsController extends Controller
         return response()->json($tag);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $tag = Tag::findOrFail($id);
         $dados = $request->validate([
             'name' => 'required',
@@ -41,13 +49,15 @@ class TagsController extends Controller
         return response()->json($tag);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $tag = Tag::findOrFail($id);
         $tag->delete();
         return response()->json(['message' => 'Tag deleted']);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $tag = Tag::findOrFail($id);
         return response()->json($tag);
     }
