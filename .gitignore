@@ -3,7 +3,7 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-!/vendor/bin/sail
+!*/vendor/bin/*
 
 # Laravel 4 specific
 bootstrap/compiled.php
