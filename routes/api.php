@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TagsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group(['prefix' => 'tags'], function() {
+    Route::get('/', [TagsController::class, 'all']);
+    Route::post('/', [TagsController::class, 'create']);
+    Route::put('/{id}', [TagsController::class, 'update']);
+    Route::delete('/{id}', [TagsController::class, 'delete']);
+    Route::get('/{id}', [TagsController::class, 'show']);
 });
