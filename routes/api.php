@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\TagsController;
+use App\Http\Middleware\TrustProxies;
+use Fruitcake\Cors\CorsService;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +23,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'tags'], function() {
-    Route::get('/', [TagsController::class, 'all']);
-    Route::post('/', [TagsController::class, 'create']);
-    Route::put('/{id}', [TagsController::class, 'update']);
-    Route::delete('/{id}', [TagsController::class, 'delete']);
-    Route::get('/{id}', [TagsController::class, 'show']);
+
+Route::middleware(HandleCors::class)->group(function () {
+    Route::group(['tags'], function () {
+        Route::get('/tags', [TagsController::class, 'all']);
+        Route::post('/tags', [TagsController::class, 'create']);
+        Route::put('/tags/{id}', [TagsController::class, 'update']);
+        Route::delete('/tags/{id}', [TagsController::class, 'delete']);
+        Route::get('/tags/{id}', [TagsController::class, 'show']);
+    });
+
+    Route::group(["recipes"], function () {
+        Route::get('/recipes', [RecipeController::class, 'all']);
+        Route::post('/recipes', [RecipeController::class, 'create']);
+        Route::put('/recipes/{id}', [RecipeController::class, 'update']);
+        Route::delete('/recipes/{id}', [RecipeController::class, 'delete']);
+        Route::get('/recipes/{id}', [RecipeController::class, 'show']);
+
+    });
 });
+
