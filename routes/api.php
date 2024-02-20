@@ -39,7 +39,10 @@ Route::middleware(HandleCors::class)->group(function () {
         Route::put('/recipes/{id}', [RecipeController::class, 'update']);
         Route::delete('/recipes/{id}', [RecipeController::class, 'delete']);
         Route::get('/recipes/{id}', [RecipeController::class, 'show']);
+    });
 
+    Route::prefix('json')->group(function() {
+        Route::get("/tags", [\App\Http\Controllers\JsonController::class, 'getTags']);
     });
 });
 
