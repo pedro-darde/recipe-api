@@ -12,8 +12,12 @@ class RecipeImages extends Model
     protected $table = 'recipe_images';
     const DIR_PATH = 'public/uploads/recipe_images';
 
+    protected $guarded = ['id'];
+
+    protected $hidden = ['path'];
+
     protected $appends = [
-        'name',
+//        'name',
         'full_name',
         'normalized_file_path',
     ];
@@ -25,7 +29,7 @@ class RecipeImages extends Model
 
     public function getNormalizedFilePathAttribute(): string
     {
-        return "storage/uploads/notes_files/{$this->recipe->id}/{$this->name}";
+        return "storage/uploads/recipe_images/{$this->recipe->id}/{$this->name}";
     }
 
     public function getFullNameAttribute(): string {

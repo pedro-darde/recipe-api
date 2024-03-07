@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Recipe;
 use App\Models\RecipeImages;
+use App\Models\RecipeTags;
+use App\Models\Tag;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
@@ -13,19 +15,29 @@ class CreateRecipeService
     {
         try {
             DB::beginTransaction();
-            $recipe = Recipe::create([
+
+            /** @var Recipe $recipe */
+            $recipe = Recipe::query()->create([
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'difficulty' => $data['difficulty'],
                 'ingredients' => $data['ingredients'],
+                'steps'      => $data['steps']
             ]);
 
-            if (!empty(@$data['images '])) {
+            if (!empty(@$data['images'])) {
                 self::storeImages($data['images'], $recipe->id);
             }
 
             if (!empty($data['tags'])) {
-                  $recipe->tags()->createMany($data['tags']);
+                $tagsInsertData = array_map(function ($tagId) use ($recipe) {
+                    return [
+                        'tag_id' => $tagId,
+                        'recipe_id' => $recipe->id
+                    ];
+                }, $data['tags']);
+
+                RecipeTags::insert($tagsInsertData);
             }
 
             DB::commit();
@@ -33,33 +45,20 @@ class CreateRecipeService
             DB::rollBack();
             throw $ex;
         }
-
-
     }
 
 
     private static function storeImages(array $images, $recipeId): void
     {
-        /** @var UploadedFile $image */
+        /** @var UploadedFile $file */
         foreach ($images as $file) {
             $pathFile = RecipeImages::DIR_PATH . "/{$recipeId}";
             $file->storeAs($pathFile, $file->getClientOriginalName(), 'local');
             RecipeImages::create([
                 'name' => $file->getClientOriginalName(),
                 'path' => "{$pathFile}/{$file->getClientOriginalName()}",
-                'note_id' => $recipeId,
+                'recipe_id' => $recipeId,
             ]);
         }
-    }
-
-    private static function createTags(array $tags, int $recipeId) {
-        $tags = array_map(function($tag) use ($recipeId) {
-            return [
-                'tag_id' => $tag,
-                'recipe_id' => $recipeId
-            ];
-        }, $tags);
-
-        DB::table('tags')->insert($tags);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\JsonResponseHelper;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
@@ -16,12 +17,7 @@ class TagsController extends Controller
             ->forPage($page, $perPage)
             ->get();
 
-        return response()->json([
-            'rows' => $dados,
-            'page' => $page,
-            'per_page' => $perPage,
-            'total' => Tag::count(),
-        ]);
+        return JsonResponseHelper::successWithPagination($dados, Tag::class);
     }
 
     public function create(Request $request)
