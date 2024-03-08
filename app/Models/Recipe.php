@@ -6,6 +6,7 @@ use App\Enums\RecipeDifficulty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Recipe extends Model
 {
@@ -19,14 +20,14 @@ class Recipe extends Model
         'difficulty' => RecipeDifficulty::class,
     ];
 
-    public function tags() {
+    public function tags(): HasManyThrough {
         return $this->hasManyThrough(
             Tag::class,
             RecipeTags::class,
             'recipe_id',
-            'tag_id',
             'id',
-            'id'
+            'id',
+            'tag_id'
         );
     }
 
