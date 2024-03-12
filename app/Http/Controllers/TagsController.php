@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\JsonResponseHelper;
 use App\Models\Tag;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TagsController extends Controller
@@ -28,7 +29,7 @@ class TagsController extends Controller
             'description' => 'string',
             'active' => 'boolean',
         ]);
-        $tag = Tag::create($dados);
+        $tag = Tag::query()->create($dados);
         return response()->json($tag);
     }
 
@@ -45,7 +46,7 @@ class TagsController extends Controller
         return response()->json($tag);
     }
 
-    public function delete($id)
+    public function delete($id): JsonResponse
     {
         $tag = Tag::findOrFail($id);
         $tag->delete();

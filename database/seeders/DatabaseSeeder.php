@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,6 +20,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        \App\Models\Tag::factory(20)->create();
+//        \App\Models\Tag::factory(20)->create();
+
+        Role::query()->firstOrCreate(['name' => 'admin']);
+        Role::query()->firstOrCreate(['name' => 'user']);
     }
 }
