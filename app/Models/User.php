@@ -70,6 +70,6 @@ class User extends Authenticatable
 
     public function can($abilities, $arguments = [])
     {
-        return $this->permissions->has ('actions', $abilities);
+        return $this->permissions->whereJsonContains('actions', $abilities);
     }
 }
