@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\TagsController;
+use App\Http\Middleware\Can;
 use App\Http\Middleware\TrustProxies;
 use Fruitcake\Cors\CorsService;
 use Illuminate\Http\Middleware\HandleCors;
@@ -24,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::middleware(HandleCors::class)->group(function () {
+Route::middleware([\App\Http\Middleware\Authenticate::class])->group(function () {
     Route::group(['tags'], function () {
         Route::get('/tags', [TagsController::class, 'all']);
         Route::post('/tags', [TagsController::class, 'create']);
