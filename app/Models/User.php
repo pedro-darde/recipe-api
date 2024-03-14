@@ -10,13 +10,14 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @property Builder|Permission[] $permissions
  * @property Role $role
  * @property-write bool $is_admin
  */
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -71,5 +72,18 @@ class User extends Authenticatable
     public function can($abilities, $arguments = [])
     {
         return $this->permissions->whereJsonContains('actions', $abilities);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [
+            'role' => $this->role->name,
+            'permissions' => $this->permissions
+        ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\TagsController;
 use App\Http\Middleware\Can;
@@ -20,12 +21,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/refresh', [AuthController::class, 'refresh']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 
-Route::middleware([\App\Http\Middleware\Authenticate::class])->group(function () {
+Route::middleware('jwt.verify')->group(function () {
     Route::group(['tags'], function () {
         Route::get('/tags', [TagsController::class, 'all']);
         Route::post('/tags', [TagsController::class, 'create']);
